@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Init Step: checking parameters
-STAGE_NAME=$STAGE_NAME
-PROJECT_NAME=$PROJECT_NAME
+STAGE_NAME=$1
+PROJECT_NAME=$2
 
 if [ $STAGE_NAME eq 'stg' ]
 then
@@ -23,7 +23,7 @@ aws kms ge-key-pair \
     --key-id "$STAGE_NAME-key-id" \
     --key-pair-spec RSA_2048 > kms-gen-key-respnerate-dataonse.json
 ENCODED_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----$(grep -o '"PublicKey": "[^"]*' kms-gen-key-response.json | grep -o '[^"]*$')-----END PUBLIC KEY-----"
-DECODED_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----$(grep -o '"PrivateKeyPlaintext": "[^"]*' kms-gen-key-response.json | grep -o '[^"]*$' | base64 -d)-----END PRIVATE KEY-----"
+DECODED_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----$(grep -o '"PrivateKeyPlaintext": "[^"]*' kms-gen-key-response.json | grep -o '[^"]*$' | base64 --decode)-----END PRIVATE KEY-----"
 echo "EncodedPublicKey: $ENCODED_PUBLIC_KEY"
 echo "EncodedPrivateKey: $DECODED_PRIVATE_KEY"
 
